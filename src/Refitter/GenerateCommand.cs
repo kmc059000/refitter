@@ -314,7 +314,8 @@ public sealed class GenerateCommand : AsyncCommand<Settings>
             {
                 InlineJsonConverters = !settings.NoInlineJsonConverters,
                 IntegerType = settings.IntegerType
-            }
+            },
+            UseRequiredKeyword = settings.UseRequiredKeyword,
         };
     }
     private static async Task WriteSingleFile(

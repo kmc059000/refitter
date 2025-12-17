@@ -1,8 +1,6 @@
 using FluentAssertions;
 using Refitter.Core;
 using Refitter.Tests.Resources;
-using Refitter.Tests.TestUtilities;
-using TUnit.Core;
 
 namespace Refitter.Tests;
 
@@ -141,6 +139,24 @@ public class CustomCSharpGeneratorSettingsTests
         generatedCode.Should().Contain("record Pet");
         generatedCode.Should().Contain("Pet(");
         generatedCode.Should().Contain("[JsonConstructor]");
+        generatedCode.Should().Contain("public string Name { get; init; }");
+    }
+
+    [Test]
+    [Arguments(SampleOpenSpecifications.SwaggerPetstoreJsonV3, "SwaggerPetstore.json")]
+    [Arguments(SampleOpenSpecifications.SwaggerPetstoreYamlV3, "SwaggerPetstore.yaml")]
+    [Arguments(SampleOpenSpecifications.SwaggerPetstoreJsonV2, "SwaggerPetstore.json")]
+    [Arguments(SampleOpenSpecifications.SwaggerPetstoreYamlV2, "SwaggerPetstore.yaml")]
+    public async Task Can_Generate_With_Immutable_Records_WithRequiredKeyword(SampleOpenSpecifications version, string filename)
+    {
+        var settings = new RefitGeneratorSettings();
+        settings.ReturnIApiResponse = true;
+        settings.CodeGeneratorSettings = new CodeGeneratorSettings { GenerateNativeRecords = true, UseRequiredKeyword = true };
+        var generatedCode = await GenerateCode(version, filename, settings);
+        generatedCode.Should().Contain("record Pet");
+        generatedCode.Should().Contain("Pet()");
+        generatedCode.Should().Contain("[JsonConstructor]");
+        generatedCode.Should().Contain("public required string Name { get; init; }");
     }
 
     private static async Task<string> GenerateCode(

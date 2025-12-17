@@ -268,4 +268,9 @@ public sealed class Settings : CommandSettings
     [CommandOption("--integer-type")]
     [DefaultValue(IntegerType.Int32)]
     public IntegerType IntegerType { get; set; } = IntegerType.Int32;
+
+    [Description("Use required keyword from C# 11")]
+    [CommandOption("--use-required-keyword")]
+    [DefaultValue(false)]
+    public bool UseRequiredKeyword { get; set; }
 }

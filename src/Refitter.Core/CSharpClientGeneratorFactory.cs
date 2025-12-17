@@ -1,4 +1,3 @@
-using System.Reflection;
 using NJsonSchema;
 using NJsonSchema.CodeGeneration;
 using NJsonSchema.CodeGeneration.CSharp;
@@ -42,6 +41,8 @@ internal class CSharpClientGeneratorFactory(RefitGeneratorSettings settings, Ope
                 GenerateNativeRecords =
                     settings.ImmutableRecords ||
                     settings.CodeGeneratorSettings?.GenerateNativeRecords is true,
+                UseRequiredKeyword = settings.UseRequiredKeyword ||
+                                     settings.CodeGeneratorSettings?.UseRequiredKeyword is true,
             }
         };
 
@@ -214,6 +215,15 @@ internal class CSharpClientGeneratorFactory(RefitGeneratorSettings settings, Ope
                     .Replace(
                         "[System.Text.Json.Serialization.JsonPolymorphic(TypeDiscriminatorPropertyName = \"{{ Discriminator }}\")]",
                         "[System.Text.Json.Serialization.JsonPolymorphic(TypeDiscriminatorPropertyName = \"{{ Discriminator }}\", UnknownDerivedTypeHandling = System.Text.Json.Serialization.JsonUnknownDerivedTypeHandling.FallBackToBaseType, IgnoreUnrecognizedTypeDiscriminators = true)]"),
+                "Class.Constructor" => """
+                                       {%- if UseSystemTextJson -%}
+                                       [System.Text.Json.Serialization.JsonConstructor]
+                                       {%- else -%}
+                                       [Newtonsoft.Json.JsonConstructor]
+                                       {%- endif -%}
+                                       public {{ClassName}}(){}
+                                       """,
+                "Class.Constructor.Record" => "",
                 _ => templateText,
             };
         }

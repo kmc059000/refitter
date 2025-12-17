@@ -387,4 +387,6 @@ public class RefitGeneratorSettings
     [Description("The collection format to use for array query parameters. Default is CollectionFormat.Multi.")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public CollectionFormat CollectionFormat { get; set; } = CollectionFormat.Multi;
+
+    public bool UseRequiredKeyword { get; set; }
 }
